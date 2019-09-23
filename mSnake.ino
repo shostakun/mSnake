@@ -60,6 +60,28 @@ const int NOTE_C5 { 523 };
 const int NOTE_CS5 { 554 };
 const int NOTE_E5 { 659 };
 const int NOTE_A5{ 880 };
+const int START_JINGLE_FREQS[]{ NOTE_A4, NOTE_CS5, NOTE_E5, NOTE_A5 };
+const int START_JINGLE_DELAYS[]{ 125, 125, 125, 125 };
+const int START_JINGLE_LENGTH{ 4 };
+const int WIN_JINGLE_FREQS[]{ NOTE_CS5, NOTE_A4, NOTE_E5, NOTE_A5, 0, NOTE_A5, 0, NOTE_A5 };
+const int WIN_JINGLE_DELAYS[]{ 125, 125, 125, 125, 175, 175, 225, 225 };
+const int WIN_JINGLE_LENGTH{ 8 };
+const int LOSE_JINGLE_FREQS[]{ NOTE_A5, NOTE_E5, NOTE_C5, NOTE_A4, 0, NOTE_A4, 0, NOTE_A4 };
+const int LOSE_JINGLE_DELAYS[]{ 125, 125, 125, 125, 175, 175, 225, 225 };
+const int LOSE_JINGLE_LENGTH{ 8 };
+
+void playJingle(const int frequencies[], const int delays[], uint8_t length)
+{
+  for (int i = 0; i < length; i++)
+  {
+    if (frequencies[i] > 0)
+      NewTone(BUZZER_PIN, frequencies[i]);
+    else
+      noNewTone(BUZZER_PIN);
+    delay(delays[i]);
+  }
+  noNewTone(BUZZER_PIN);
+}
 
 // Constants and variables for the game data.
 const int MAX_SNAKE_LENGTH{20}; // When the snake gets this long, we win!
@@ -108,7 +130,7 @@ bool gameRunning{false};
 // Set the brightness of the display based on the light sensor.
 void setIntensity()
 {
-  uint16_t lightness{ analogRead(LIGHT_SENSOR / 100) };
+  uint16_t lightness{ analogRead(LIGHT_SENSOR) / 100 };
   lightness = (lightness < 1) ? 1 : ((lightness > 7) ? 7 : lightness); // Clamp.
   matrix.setIntensity(lightness); // Use a value between 0 and 7 for brightness.
 }
@@ -152,16 +174,7 @@ void newGame()
     setPixel(snake[i], HIGH);
   matrix.write(); // Send the memory bitmap to the display.
 
-  // Play a jingle!
-  NewTone(BUZZER_PIN, NOTE_A4);
-  delay(125);
-  NewTone(BUZZER_PIN, NOTE_CS5);
-  delay(125);
-  NewTone(BUZZER_PIN, NOTE_E5);
-  delay(125);
-  NewTone(BUZZER_PIN, NOTE_A5);
-  delay(125);
-  noNewTone(BUZZER_PIN);
+  playJingle(START_JINGLE_FREQS, START_JINGLE_DELAYS, START_JINGLE_LENGTH);
 
   // Schedule the next turn and start the game!
   nextTurn = millis() + turnTime;
@@ -174,8 +187,6 @@ void setup()
   Serial.begin(115200);
   receiver.enableIRIn(); // Start the receiver.
   Serial.println("Ready to receive IR signals!");
-
-  drawStart();
 }
 
 // Get a button press from the remote and decide what to do.
@@ -235,56 +246,16 @@ void handleRemote()
 void gameOver()
 {
   gameRunning = false;
-
-  // Play a jingle!
-  NewTone(BUZZER_PIN, NOTE_A5);
-  delay(125);
-  NewTone(BUZZER_PIN, NOTE_E5);
-  delay(125);
-  NewTone(BUZZER_PIN, NOTE_C5);
-  delay(125);
-  NewTone(BUZZER_PIN, NOTE_A4);
-  delay(125);
-  noNewTone(BUZZER_PIN);
-  delay(175);
-  NewTone(BUZZER_PIN, NOTE_A4);
-  delay(175);
-  noNewTone(BUZZER_PIN);
-  delay(225);
-  NewTone(BUZZER_PIN, NOTE_A4);
-  delay(225);
-  noNewTone(BUZZER_PIN);
-
+  playJingle(LOSE_JINGLE_FREQS, LOSE_JINGLE_DELAYS, LOSE_JINGLE_LENGTH);
   delay(500);
-  drawStart();
 }
 
 // Do stuff when the player wins...
 void youWin()
 {
   gameRunning = false;
-
-  // Play a jingle!
-  NewTone(BUZZER_PIN, NOTE_E5);
-  delay(125);
-  NewTone(BUZZER_PIN, NOTE_A4);
-  delay(125);
-  NewTone(BUZZER_PIN, NOTE_E5);
-  delay(125);
-  NewTone(BUZZER_PIN, NOTE_A5);
-  delay(125);
-  noNewTone(BUZZER_PIN);
-  delay(175);
-  NewTone(BUZZER_PIN, NOTE_A5);
-  delay(175);
-  noNewTone(BUZZER_PIN);
-  delay(225);
-  NewTone(BUZZER_PIN, NOTE_A5);
-  delay(225);
-  noNewTone(BUZZER_PIN);
-
+  playJingle(WIN_JINGLE_FREQS, WIN_JINGLE_DELAYS, WIN_JINGLE_LENGTH);
   delay(500);
-  drawStart();
 }
 
 // Check if the given pixel is in the snake.
@@ -353,5 +324,10 @@ void loop()
     // TODO: Use the analog sensor to control the speed!
     nextTurn += turnTime; // Schedule the next turn.
     takeTurn();
+  }
+  else
+  {
+    // If the game isn't running, keep redrawing the start image!
+    drawStart();
   }
 }
