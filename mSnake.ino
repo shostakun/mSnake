@@ -319,11 +319,14 @@ void takeTurn()
 void loop()
 {
   handleRemote();
-  if (gameRunning && millis() > nextTurn)
+  if (gameRunning)
   {
-    // TODO: Use the analog sensor to control the speed!
-    nextTurn += turnTime; // Schedule the next turn.
-    takeTurn();
+    if (millis() > nextTurn)
+    {
+      // TODO: Use the analog sensor to control the speed!
+      nextTurn += turnTime; // Schedule the next turn.
+      takeTurn();
+    }
   }
   else
   {
