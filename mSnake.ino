@@ -89,26 +89,26 @@ void playJingle(const int frequencies[], const int delays[], uint8_t length)
 void debug(int nextHead=-1)
 {
   Serial.print("Snake: ");
-  for (int i = 0; i < MAX_SNAKE_LENGTH; i++)
-  {
-    Serial.print(snake[i]);
-    Serial.print(", ");
-  }
+//  for (int i = 0; i < MAX_SNAKE_LENGTH; i++)
+//  {
+//    Serial.print(snake[i]);
+//    Serial.print(", ");
+//  }
   Serial.println("");
-  Serial.print("Head: ");
-  Serial.print(head);
-  if (nextHead >= 0)
-  {
-    Serial.print("   Next Head: ");
-    Serial.print(nextHead);
-  }
-  Serial.println("");
-  Serial.print("Tail: ");
-  Serial.println(tail);
-  Serial.print("Dir: ");
-  Serial.println(dir);
-  Serial.print("Apple: ");
-  Serial.println(apple);
+//  Serial.print("Head: ");
+//  Serial.print(head);
+//  if (nextHead >= 0)
+//  {
+//    Serial.print("   Next Head: ");
+//    Serial.print(nextHead);
+//  }
+//  Serial.println("");
+//  Serial.print("Tail: ");
+//  Serial.println(tail);
+//  Serial.print("Dir: ");
+//  Serial.println(dir);
+//  Serial.print("Apple: ");
+//  Serial.println(apple);
 }
 
 // Variables for timing.
