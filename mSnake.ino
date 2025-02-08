@@ -221,18 +221,18 @@ void handleRemote()
           newGame();
         Serial.println("Gear button!");
         break;
-      case REMOTE_C: // Give us a way to stop the game, for testing.
-        gameRunning = false;
-        Serial.println("Button C!");
-        break;
-      case REMOTE_7: // Game over, for testing.
-        gameOver();
-        Serial.println("Button 7!");
-        break;
-      case REMOTE_8: // You win, for testing.
-        youWin();
-        Serial.println("Button 8!");
-        break;
+//      case REMOTE_C: // Give us a way to stop the game, for testing.
+//        gameRunning = false;
+//        Serial.println("Button C!");
+//        break;
+//      case REMOTE_7: // Game over, for testing.
+//        gameOver();
+//        Serial.println("Button 7!");
+//        break;
+//      case REMOTE_8: // You win, for testing.
+//        youWin();
+//        Serial.println("Button 8!");
+//        break;
       case REPEAT_CODE: // Ignore repeats!
         break;
       default:
